@@ -22,18 +22,30 @@ export default function Header() {
     checkoutModal.current.open();
   }
 
-  function handleSubmitOrder() {
+  async function handleSubmitOrder() {
+    console.log(`Close form`);
+
     checkoutModal.current.close();
+
     successOrderModal.current.open();
+    console.log(`open successsfull `);
+  }
+
+  function handleCloseModal(modal) {
+    modal.current.close();
   }
 
   let modalActions = <button className="text-button">Close</button>;
   const modalCheckoutActions = (
     <>
-      <button className="text-button">Close</button>
-      <button className="button" onClick={handleSubmitOrder}>
-        Submit Order
+      <button
+        className="text-button"
+        type="button"
+        onClick={() => handleCloseModal(checkoutModal)}
+      >
+        Close
       </button>
+      <button className="button">Submit Order</button>
     </>
   );
 
@@ -55,12 +67,11 @@ export default function Header() {
         title="Thank you for your order!"
         actions={<button className="text-button">Close</button>}
       ></CustomModal>
-      <CustomModal
-        ref={checkoutModal}
-        title="Checkout"
-        actions={modalCheckoutActions}
-      >
-        <Checkout />
+      <CustomModal ref={checkoutModal} title="Checkout">
+        <Checkout
+          actions={modalCheckoutActions}
+          handleSuccess={handleSubmitOrder}
+        />
       </CustomModal>
       <CustomModal ref={modal} title="Your Cart" actions={modalActions}>
         <Cart />

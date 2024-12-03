@@ -249,6 +249,15 @@ h1 {
   background-color: rgba(0, 0, 0, 0.55);
 }
 
+.error-label {
+  color: tomato;
+  font-weight: 600;
+}
+
+.error-label {
+  color: #312c1d;
+  font-weight: 600;
+}
 .center {
   display: flex;
   align-items: center;

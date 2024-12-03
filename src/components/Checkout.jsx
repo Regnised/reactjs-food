@@ -1,7 +1,8 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { CartContext } from '../store/shopping-cart-context';
 import { useInput } from '../hooks/useInput';
 import Input from './Input';
+import { createOrder } from '../http';
 
 function isEmail(value) {
   return value.includes('@');
@@ -12,11 +13,13 @@ function isNotEmpty(value) {
 }
 
 function minLength(value, min) {
-  return value.trim().length > min;
+  return value.trim().length >= min;
 }
 
-export default function Checkout() {
+export default function Checkout({ actions, handleSuccess }) {
   const { cart } = useContext(CartContext);
+  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     value: fullName,
     handleInputChange: handleFullNameChange,
@@ -62,13 +65,43 @@ export default function Checkout() {
   );
   const formattedTotalPrice = `$${totalPrice.toFixed(2)}`;
 
-  function handleFormSubmit(event) {
+  async function handleFormSubmit(event) {
     event.preventDefault();
+    setError(false);
+    let order;
 
-    if (emailHasError || passwordHasError) {
+    if (
+      emailHasError ||
+      fullNameHasError ||
+      streetHasError ||
+      postalCodeHasError ||
+      cityHasError
+    ) {
       return 'error';
     }
-    console.log(email, password);
+
+    try {
+      setIsLoading(true);
+      order = await createOrder({
+        items: cart,
+        customer: {
+          email,
+          name: fullName,
+          street,
+          'postal-code': postalCode,
+          city,
+        },
+      });
+    } catch (error) {
+      setIsLoading(false);
+      setError(error);
+    }
+
+    if (order) {
+      setIsLoading(false);
+      console.log(order);
+      handleSuccess();
+    }
   }
 
   return (
@@ -83,11 +116,11 @@ export default function Checkout() {
           label="Full Name"
           id="fullName"
           type="text"
-          name="fullName"
+          name="name"
           error={fullNameHasError && 'Please enter a valid full name'}
           value={fullName}
           onChange={handleFullNameChange}
-        />{' '}
+        />
         <Input
           label="Email"
           id="email"
@@ -97,7 +130,7 @@ export default function Checkout() {
           value={email}
           onChange={handleEmailChange}
           onBlur={handleEmailBlur}
-        />{' '}
+        />
         <Input
           label="Street"
           id="street"
@@ -112,7 +145,7 @@ export default function Checkout() {
             label="Postal Code"
             id="postalCode"
             type="number"
-            name="postalCode"
+            name="postal-code"
             error={postalCodeHasError && 'Please enter a valid Postal code'}
             value={postalCode}
             onChange={handleCodeChange}
@@ -129,6 +162,9 @@ export default function Checkout() {
             onBlur={handleCityBlur}
           />
         </div>
+        {isLoading && <label className="loading-label">Loading...</label>}
+        {error && <label className="error-label">{error.message}</label>}
+        <div className="modal-actions">{actions}</div>
       </form>
     </div>
   );
