@@ -106,7 +106,7 @@ export default function Checkout({ actions, handleSuccess }) {
 
   return (
     <div id="checkout">
-      <div id="cart-total">
+      <div className="cart-total">
         <p>
           Total Amount: <strong>{formattedTotalPrice}</strong>
         </p>
@@ -140,7 +140,7 @@ export default function Checkout({ actions, handleSuccess }) {
           value={street}
           onChange={handleStreetChange}
         />
-        <div>
+        <div className="control-row">
           <Input
             label="Postal Code"
             id="postalCode"

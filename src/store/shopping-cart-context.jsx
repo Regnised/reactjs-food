@@ -109,6 +109,8 @@ export default function CartContextProvider({ children }) {
   }
 
   function handleUpdateCartItemQuantity(id, amount) {
+    console.log(id, amount);
+
     shoppingCartDispatch({
       type: 'UPDATE_ITEM',
 

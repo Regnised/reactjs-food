@@ -1,7 +1,7 @@
 import { useContext, useRef } from 'react';
 import logo from '../assets/logo.jpg';
 import { CartContext } from '../store/shopping-cart-context';
-import CustomModal from './CartModal';
+import CustomModal from './CustomModal';
 import Cart from './Cart';
 import Checkout from './Checkout';
 
@@ -23,12 +23,8 @@ export default function Header() {
   }
 
   async function handleSubmitOrder() {
-    console.log(`Close form`);
-
     checkoutModal.current.close();
-
     successOrderModal.current.open();
-    console.log(`open successsfull `);
   }
 
   function handleCloseModal(modal) {
@@ -82,9 +78,9 @@ export default function Header() {
           <h1>REACTFOOD</h1>
         </div>
 
-        <p className="text-button" onClick={handleOpenCartClick}>
+        <button className="text-button" onClick={handleOpenCartClick}>
           Cart ({`${cart.length}`})
-        </p>
+        </button>
       </header>
     </>
   );

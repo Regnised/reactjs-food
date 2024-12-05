@@ -11,7 +11,7 @@ export default function Cart() {
   const formattedTotalPrice = `$${totalPrice.toFixed(2)}`;
 
   return (
-    <div id="cart">
+    <div className="cart">
       {cart.length === 0 && <p>No items in cart!</p>}
       {cart.length > 0 && (
         <ul>
